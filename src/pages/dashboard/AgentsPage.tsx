@@ -28,8 +28,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { ViewDialog } from '@/components/management/ViewDialog';
 import { toast } from 'sonner';
-import { Plus, Search, Pencil, Trash2, Loader2, UserCheck } from 'lucide-react';
+import { Plus, Search, Pencil, Trash2, Loader2, UserCheck, Eye } from 'lucide-react';
 
 export default function AgentsPage() {
   const [agents, setAgents] = useState<Agent[]>([]);
@@ -37,7 +38,9 @@ export default function AgentsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [editingAgent, setEditingAgent] = useState<Agent | null>(null);
+  const [viewingAgent, setViewingAgent] = useState<Agent | null>(null);
   const [deletingAgent, setDeletingAgent] = useState<Agent | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -266,7 +269,19 @@ export default function AgentsPage() {
                       <Button
                         variant="ghost"
                         size="icon"
+                        onClick={() => {
+                          setViewingAgent(agent);
+                          setViewDialogOpen(true);
+                        }}
+                        title="View"
+                      >
+                        <Eye className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={() => handleOpenDialog(agent)}
+                        title="Edit"
                       >
                         <Pencil className="w-4 h-4" />
                       </Button>
@@ -277,6 +292,7 @@ export default function AgentsPage() {
                           setDeletingAgent(agent);
                           setDeleteDialogOpen(true);
                         }}
+                        title="Delete"
                       >
                         <Trash2 className="w-4 h-4 text-destructive" />
                       </Button>
@@ -445,6 +461,25 @@ export default function AgentsPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* View Dialog */}
+      <ViewDialog
+        open={viewDialogOpen}
+        onOpenChange={setViewDialogOpen}
+        title="Agent Details"
+        fields={viewingAgent ? [
+          { label: 'Full Name', value: viewingAgent.full_name },
+          { label: 'Email', value: viewingAgent.email },
+          { label: 'Phone', value: viewingAgent.phone },
+          { label: 'License Number', value: viewingAgent.license_number },
+          { label: 'Specialization', value: viewingAgent.specialization || 'General' },
+          { label: 'Commission Rate', value: `${viewingAgent.commission_rate}%` },
+          { label: 'Total Clients', value: viewingAgent.total_clients },
+          { label: 'Total Returns', value: viewingAgent.total_returns },
+          { label: 'Status', value: viewingAgent.status, type: 'badge' },
+          { label: 'Created', value: viewingAgent.created_at, type: 'date' },
+        ] : []}
+      />
     </div>
   );
 }

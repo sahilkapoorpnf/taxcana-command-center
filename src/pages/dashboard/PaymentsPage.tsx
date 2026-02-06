@@ -29,9 +29,10 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { ViewDialog } from '@/components/management/ViewDialog';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
-import { Plus, Search, Pencil, Trash2, Loader2, CreditCard, DollarSign } from 'lucide-react';
+import { Plus, Search, Pencil, Trash2, Loader2, CreditCard, DollarSign, Eye } from 'lucide-react';
 
 export default function PaymentsPage() {
   const [payments, setPayments] = useState<any[]>([]);
@@ -40,7 +41,9 @@ export default function PaymentsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [editingPayment, setEditingPayment] = useState<any | null>(null);
+  const [viewingPayment, setViewingPayment] = useState<any | null>(null);
   const [deletingPayment, setDeletingPayment] = useState<any | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -279,7 +282,19 @@ export default function PaymentsPage() {
                       <Button
                         variant="ghost"
                         size="icon"
+                        onClick={() => {
+                          setViewingPayment(payment);
+                          setViewDialogOpen(true);
+                        }}
+                        title="View"
+                      >
+                        <Eye className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={() => handleOpenDialog(payment)}
+                        title="Edit"
                       >
                         <Pencil className="w-4 h-4" />
                       </Button>
@@ -290,6 +305,7 @@ export default function PaymentsPage() {
                           setDeletingPayment(payment);
                           setDeleteDialogOpen(true);
                         }}
+                        title="Delete"
                       >
                         <Trash2 className="w-4 h-4 text-destructive" />
                       </Button>
@@ -470,6 +486,24 @@ export default function PaymentsPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* View Dialog */}
+      <ViewDialog
+        open={viewDialogOpen}
+        onOpenChange={setViewDialogOpen}
+        title="Payment Details"
+        fields={viewingPayment ? [
+          { label: 'Client', value: viewingPayment.clients?.full_name },
+          { label: 'Amount', value: viewingPayment.amount, type: 'currency' },
+          { label: 'Payment Type', value: viewingPayment.payment_type },
+          { label: 'Payment Method', value: viewingPayment.payment_method },
+          { label: 'Status', value: viewingPayment.status, type: 'badge' },
+          { label: 'Transaction ID', value: viewingPayment.transaction_id },
+          { label: 'Notes', value: viewingPayment.notes },
+          { label: 'Created', value: viewingPayment.created_at, type: 'date' },
+          { label: 'Processed At', value: viewingPayment.processed_at, type: 'date' },
+        ] : []}
+      />
     </div>
   );
 }

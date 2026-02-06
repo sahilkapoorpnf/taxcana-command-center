@@ -29,9 +29,10 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { ViewDialog } from '@/components/management/ViewDialog';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
-import { Plus, Search, Pencil, Trash2, Loader2, FileText, CheckCircle, XCircle } from 'lucide-react';
+import { Plus, Search, Pencil, Trash2, Loader2, FileText, CheckCircle, XCircle, Eye } from 'lucide-react';
 
 export default function DocumentsPage() {
   const [documents, setDocuments] = useState<any[]>([]);
@@ -40,7 +41,9 @@ export default function DocumentsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [editingDoc, setEditingDoc] = useState<any | null>(null);
+  const [viewingDoc, setViewingDoc] = useState<any | null>(null);
   const [deletingDoc, setDeletingDoc] = useState<any | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -283,7 +286,19 @@ export default function DocumentsPage() {
                       <Button
                         variant="ghost"
                         size="icon"
+                        onClick={() => {
+                          setViewingDoc(doc);
+                          setViewDialogOpen(true);
+                        }}
+                        title="View"
+                      >
+                        <Eye className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={() => handleOpenDialog(doc)}
+                        title="Edit"
                       >
                         <Pencil className="w-4 h-4" />
                       </Button>
@@ -294,6 +309,7 @@ export default function DocumentsPage() {
                           setDeletingDoc(doc);
                           setDeleteDialogOpen(true);
                         }}
+                        title="Delete"
                       >
                         <Trash2 className="w-4 h-4 text-destructive" />
                       </Button>
@@ -440,6 +456,22 @@ export default function DocumentsPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* View Dialog */}
+      <ViewDialog
+        open={viewDialogOpen}
+        onOpenChange={setViewDialogOpen}
+        title="Document Details"
+        fields={viewingDoc ? [
+          { label: 'Document Name', value: viewingDoc.name },
+          { label: 'Client', value: viewingDoc.clients?.full_name },
+          { label: 'Document Type', value: viewingDoc.document_type },
+          { label: 'Status', value: viewingDoc.status, type: 'badge' },
+          { label: 'Notes', value: viewingDoc.notes },
+          { label: 'Uploaded', value: viewingDoc.created_at, type: 'date' },
+          { label: 'Verified At', value: viewingDoc.verified_at, type: 'date' },
+        ] : []}
+      />
     </div>
   );
 }
