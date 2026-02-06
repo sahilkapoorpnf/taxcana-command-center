@@ -3,7 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { AuthProvider, useAuth } from "@/hooks/useAuth";
+import { AuthProvider } from "@/hooks/useAuth";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import Login from "./pages/Login";
 import DashboardHome from "./pages/dashboard/DashboardHome";
@@ -12,6 +12,10 @@ import AgentsPage from "./pages/dashboard/AgentsPage";
 import TaxReturnsPage from "./pages/dashboard/TaxReturnsPage";
 import DocumentsPage from "./pages/dashboard/DocumentsPage";
 import PaymentsPage from "./pages/dashboard/PaymentsPage";
+import AppointmentsPage from "./pages/dashboard/AppointmentsPage";
+import ServicesPage from "./pages/dashboard/ServicesPage";
+import StaffPage from "./pages/dashboard/StaffPage";
+import ActivityLogPage from "./pages/dashboard/ActivityLogPage";
 import ReportsPage from "./pages/dashboard/ReportsPage";
 import SettingsPage from "./pages/dashboard/SettingsPage";
 import NotFound from "./pages/NotFound";
@@ -24,20 +28,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 }
 
 function PublicRoute({ children }: { children: React.ReactNode }) {
-  const { user, loading } = useAuth();
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
-  }
-
-  if (user) {
-    return <Navigate to="/dashboard" replace />;
-  }
-
+  // Bypass authentication - allow direct access to login page
   return <>{children}</>;
 }
 
@@ -57,6 +48,10 @@ const App = () => (
             <Route path="/dashboard/tax-returns" element={<ProtectedRoute><TaxReturnsPage /></ProtectedRoute>} />
             <Route path="/dashboard/documents" element={<ProtectedRoute><DocumentsPage /></ProtectedRoute>} />
             <Route path="/dashboard/payments" element={<ProtectedRoute><PaymentsPage /></ProtectedRoute>} />
+            <Route path="/dashboard/appointments" element={<ProtectedRoute><AppointmentsPage /></ProtectedRoute>} />
+            <Route path="/dashboard/services" element={<ProtectedRoute><ServicesPage /></ProtectedRoute>} />
+            <Route path="/dashboard/staff" element={<ProtectedRoute><StaffPage /></ProtectedRoute>} />
+            <Route path="/dashboard/activity" element={<ProtectedRoute><ActivityLogPage /></ProtectedRoute>} />
             <Route path="/dashboard/reports" element={<ProtectedRoute><ReportsPage /></ProtectedRoute>} />
             <Route path="/dashboard/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
