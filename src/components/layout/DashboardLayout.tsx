@@ -27,6 +27,9 @@ import {
   TreePalm,
   Bell,
   ChevronDown,
+  Calendar,
+  Package,
+  Activity,
 } from 'lucide-react';
 
 interface DashboardLayoutProps {
@@ -40,6 +43,10 @@ const navigation = [
   { name: 'Tax Returns', href: '/dashboard/tax-returns', icon: FileText },
   { name: 'Documents', href: '/dashboard/documents', icon: FolderOpen },
   { name: 'Payments', href: '/dashboard/payments', icon: CreditCard },
+  { name: 'Appointments', href: '/dashboard/appointments', icon: Calendar },
+  { name: 'Services', href: '/dashboard/services', icon: Package },
+  { name: 'Staff', href: '/dashboard/staff', icon: Users },
+  { name: 'Activity Log', href: '/dashboard/activity', icon: Activity },
   { name: 'Reports', href: '/dashboard/reports', icon: BarChart3 },
   { name: 'Settings', href: '/dashboard/settings', icon: Settings },
 ];
