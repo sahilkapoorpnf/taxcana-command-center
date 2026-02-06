@@ -23,17 +23,9 @@ export default function Login() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-
-    const { error } = await signIn(loginEmail, loginPassword);
-    
-    if (error) {
-      toast.error(error.message);
-    } else {
-      toast.success('Welcome back!');
-      navigate('/dashboard');
-    }
-    setLoading(false);
+    // Bypass authentication - redirect directly to dashboard
+    toast.success('Welcome to TaxCana Dashboard!');
+    navigate('/dashboard');
   };
 
   const handleSignup = async (e: React.FormEvent) => {

@@ -29,8 +29,9 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { ViewDialog } from '@/components/management/ViewDialog';
 import { toast } from 'sonner';
-import { Plus, Search, Pencil, Trash2, Loader2, User } from 'lucide-react';
+import { Plus, Search, Pencil, Trash2, Loader2, User, Eye } from 'lucide-react';
 
 export default function ClientsPage() {
   const [clients, setClients] = useState<Client[]>([]);
@@ -38,7 +39,9 @@ export default function ClientsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [editingClient, setEditingClient] = useState<Client | null>(null);
+  const [viewingClient, setViewingClient] = useState<Client | null>(null);
   const [deletingClient, setDeletingClient] = useState<Client | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -256,7 +259,19 @@ export default function ClientsPage() {
                       <Button
                         variant="ghost"
                         size="icon"
+                        onClick={() => {
+                          setViewingClient(client);
+                          setViewDialogOpen(true);
+                        }}
+                        title="View"
+                      >
+                        <Eye className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={() => handleOpenDialog(client)}
+                        title="Edit"
                       >
                         <Pencil className="w-4 h-4" />
                       </Button>
@@ -267,6 +282,7 @@ export default function ClientsPage() {
                           setDeletingClient(client);
                           setDeleteDialogOpen(true);
                         }}
+                        title="Delete"
                       >
                         <Trash2 className="w-4 h-4 text-destructive" />
                       </Button>
@@ -427,6 +443,24 @@ export default function ClientsPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* View Dialog */}
+      <ViewDialog
+        open={viewDialogOpen}
+        onOpenChange={setViewDialogOpen}
+        title="Client Details"
+        fields={viewingClient ? [
+          { label: 'Full Name', value: viewingClient.full_name },
+          { label: 'Email', value: viewingClient.email },
+          { label: 'Phone', value: viewingClient.phone },
+          { label: 'Address', value: viewingClient.address },
+          { label: 'SSN (Last 4)', value: viewingClient.ssn_last_four ? `***-**-${viewingClient.ssn_last_four}` : null },
+          { label: 'Filing Status', value: viewingClient.filing_status?.replace('_', ' ') },
+          { label: 'Status', value: viewingClient.status, type: 'badge' },
+          { label: 'Notes', value: viewingClient.notes },
+          { label: 'Created', value: viewingClient.created_at, type: 'date' },
+        ] : []}
+      />
     </div>
   );
 }

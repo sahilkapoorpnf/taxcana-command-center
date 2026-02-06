@@ -29,8 +29,9 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { ViewDialog } from '@/components/management/ViewDialog';
 import { toast } from 'sonner';
-import { Plus, Search, Pencil, Trash2, Loader2, FileText, DollarSign } from 'lucide-react';
+import { Plus, Search, Pencil, Trash2, Loader2, FileText, DollarSign, Eye } from 'lucide-react';
 
 export default function TaxReturnsPage() {
   const [returns, setReturns] = useState<TaxReturn[]>([]);
@@ -40,7 +41,9 @@ export default function TaxReturnsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [editingReturn, setEditingReturn] = useState<TaxReturn | null>(null);
+  const [viewingReturn, setViewingReturn] = useState<any | null>(null);
   const [deletingReturn, setDeletingReturn] = useState<TaxReturn | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -309,7 +312,19 @@ export default function TaxReturnsPage() {
                       <Button
                         variant="ghost"
                         size="icon"
+                        onClick={() => {
+                          setViewingReturn(ret);
+                          setViewDialogOpen(true);
+                        }}
+                        title="View"
+                      >
+                        <Eye className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={() => handleOpenDialog(ret)}
+                        title="Edit"
                       >
                         <Pencil className="w-4 h-4" />
                       </Button>
@@ -320,6 +335,7 @@ export default function TaxReturnsPage() {
                           setDeletingReturn(ret);
                           setDeleteDialogOpen(true);
                         }}
+                        title="Delete"
                       >
                         <Trash2 className="w-4 h-4 text-destructive" />
                       </Button>
@@ -556,6 +572,27 @@ export default function TaxReturnsPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* View Dialog */}
+      <ViewDialog
+        open={viewDialogOpen}
+        onOpenChange={setViewDialogOpen}
+        title="Tax Return Details"
+        fields={viewingReturn ? [
+          { label: 'Client', value: viewingReturn.clients?.full_name },
+          { label: 'Agent', value: viewingReturn.agents?.full_name || 'Unassigned' },
+          { label: 'Tax Year', value: viewingReturn.tax_year },
+          { label: 'Return Type', value: viewingReturn.return_type },
+          { label: 'Status', value: viewingReturn.status, type: 'badge' },
+          { label: 'Gross Income', value: viewingReturn.gross_income, type: 'currency' },
+          { label: 'Federal Refund', value: viewingReturn.federal_refund, type: 'currency' },
+          { label: 'State Refund', value: viewingReturn.state_refund, type: 'currency' },
+          { label: 'Federal Owed', value: viewingReturn.federal_owed, type: 'currency' },
+          { label: 'State Owed', value: viewingReturn.state_owed, type: 'currency' },
+          { label: 'Notes', value: viewingReturn.notes },
+          { label: 'Created', value: viewingReturn.created_at, type: 'date' },
+        ] : []}
+      />
     </div>
   );
 }
